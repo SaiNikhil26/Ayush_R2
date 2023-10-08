@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+  <!-- 
+    - primary meta tag
+  -->
+  <title>Nature's cure-leaf by leaf</title>
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href="{{url_for('static',filename='CSS/ecom.css')}}">
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Nunito+Sans:wght@400;700&display=swap"
+    rel="stylesheet">
+
+    <style>
+      #home
+      {
+        background-image: url("{{'static/'+'Images/leafbg.png'}}");
+      }
+    </style>
+
+
+</head>
+
+<body id="top">
+
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+    <div class="container">
+
+      <button class="nav-toggle-btn" aria-label="toggle manu" data-nav-toggler>
+        <ion-icon name="menu-outline" aria-hidden="true" class="menu-icon"></ion-icon>
+        <ion-icon name="close-outline" aria-label="true" class="close-icon"></ion-icon>
+      </button>
+      
+      <a href="#" class="logo">Ayush Cure</a>
+
+      <nav class="navbar" data-navbar>
+        <ul class="navbar-list">
+
+          <li class="navbar-item">
+            <a href="#home" class="navbar-link" data-nav-link>Home</a>
+          </li>
+
+          <li class="navbar-item">
+            <a href="#shop" class="navbar-link" data-nav-link>Shop</a>
+          </li>
+
+
+        </ul>
+
+        <a href="#" class="navbar-action-btn">Log In</a>
+      </nav>
+
+      <div class="header-actions">
+
+        <button class="action-btn" aria-label="Search">
+          <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+        </button>
+
+<div class="dropdown">
+  <a href="{{url_for('userdetails')}}">
+    <button class="action-btn user" aria-label="User" id="user-button">
+    <span class="material-symbols-outlined">person</span>
+    </button>
+  </a>
+  <div class="dropdown-content" id="user-dropdown">
+    {% if auth == 1%}
+    <p style="color: white;"><strong style="color: white;">Username: </strong>{{username}}</p>
+    <br>
+    <p style="color: white;"><strong style="color: white;">Email: </strong>{{email}}</p>
+    {%endif%}
+  </div>
+</div>
+          <button class="action-btn" aria-label="cart" id="cart-button">
+            <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+            <span class="btn-badge">0</span>
+          </button>
+          
+
+          <span class="btn-badge">0</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+
+
+
+
+  <main>
+    <article>
+
+      <!-- 
+        - #HERO
+      -->
+
+      <section class="section hero has-bg-image" id="home" aria-label="home" >
+        <div class="container">
+
+          <h1 class="h1 hero-title">
+            <span class="span">Ayush Cure</span> Leaf by leaf
+          </h1>
+
+          <a href="#shop" class="btn">Shop Now</a>
+
+        </div>
+      </section>
+      <!-- 
+        - #PRODUCT
+      -->
+     <!-- 
+    - #PRODUCT
+  -->
+  <section class="section product" id="shop" aria-label="product">
+    <div id="cart-popup" class="cart-popup">
+      <div class="cart-content">
+          <h2>Your Cart</h2>
+          <ul id="cart-items">
+              <!-- Cart items will be displayed here -->
+          </ul>
+          <p>Total: Rs<span id="cart-total-popup">0.00</span></p>
+          
+          
+          <button onclick="checkout()">Checkout</button>
+          <button onclick="closeCartPopup()">Close</button>
+      </div>
+  </div>
+    <div class="pagination">
+        <label for="page-slider">Page:</label>
+        <input type="range" id="page-slider" min="1" max="10" step="1" onchange="goToPage(this.value)">
+    </div>
+
+    <div id="leaf-container">
+        <!-- Leaf cards will be added here dynamically -->
+    </div>
+  </section>
+    <script>
+        // Leaf data (name and price)
+        const leaves = [
+    { name: "Amaranthus Green", price: 199 },
+    { name: "Amaranthus Red", price: 199 },
+    { name: "Balloon Vine", price: 249 },
+    { name: "Betel Leaves", price: 299 },
+    { name: "Black Night ", price: 179 },
+    { name: "Celery", price: 299 },
+    { name: "Chinese Spinach", price: 249 },
+    { name: "Coriander Leaves", price: 149 },
+    { name: "Curry Leaf", price: 199 },
+    { name: "Dwarf Copperleaf ", price: 179 },
+    { name: "Dwarf Copperleaf ", price: 179 },
+    { name: "False Amarnath", price: 199 },
+    { name: "Fenugreek Leaves", price: 149 },
+    { name: "Giant Pigweed", price: 229 },
+    { name: "Gongura", price: 279 },
+    { name: "Indian Pennywort", price: 299 },
+    { name: "Lagos Spinach", price: 249 },
+    { name: "Lambs Quarters", price: 179 },
+    { name: "Lettuce Tree", price: 329 },
+    { name: "Malabar Spinach", price: 249 },
+    { name: "Mint Leaves", price: 229 },
+    { name: "Mustard", price: 149 },
+    { name: "Palak", price: 179 },
+    { name: "Siru Keerai", price: 229 },
+    { name: "Water Spinach", price: 249 },
+    { name: "Asthma Plant", price: 199 },
+    { name: "Avaram", price: 229 },
+    { name: "Balloon Vine", price: 249 },
+    { name: "Bellyache Bush", price: 199 },
+    { name: "Benghal Dayflower", price: 279 },
+    { name: "Big Caltrops", price: 249 },
+    { name: "Black-Honey Shrub", price: 229 },
+    { name: "Bristly Wild Grape", price: 299 },
+    { name: "Butterfly Pea", price: 279 },
+    { name: "Cape Gooseberry", price: 349 },
+    { name: "Common Wireweed", price: 229 },
+    { name: "Country Mallow", price: 279 },
+    { name: "Crown Flower", price: 329 },
+    { name: "Green Chireta", price: 199 },
+    { name: "Holy Basil", price: 249 },
+    { name: "Indian CopperLeaf", price: 229 },
+    { name: "Indian Jujube", price: 249 },
+    { name: "Indian Sarsaparilla", price: 279 },
+    { name: "Indian Stinging ", price: 229 },
+    { name: "Indian Thornapple", price: 279 },
+    { name: "Indian Wormwood", price: 249 },
+    { name: "Ivy Gourd", price: 229 },
+    { name: "Kokilaksha", price: 279 },
+    { name: "Land Caltrops ", price: 199 },
+    { name: "Madagascar Periwinkle", price: 249 },
+    { name: "Madras Pea Pumpkin", price: 279 },
+    { name: "Malabar Catmint", price: 229 },
+    { name: "Mexican Mint", price: 279 },
+    { name: "Mexican Prickly ", price: 249 },
+    { name: "Mountain Knotgrass", price: 229 },
+    { name: "Nalta Jute", price: 279 },
+    { name: "Night Blooming Cereus", price: 299 },
+    { name: "Panicled Foldwing", price: 249 },
+    { name: "Prickly Chaff", price: 279 },
+    { name: "Punarnava", price: 229 },
+    { name: "Purple Fruited Pea ", price: 179 },
+    { name: "Purple Tephrosia", price: 249 },
+    { name: "Rosary Pea", price: 279 },
+    { name: "Shaggy Button Weed", price: 199 },
+    { name: "Small Water Clover", price: 229 },
+    { name: "Spiderwisp", price: 279 },
+    { name: "Square Stalked Vine", price: 249 },
+    { name: "Stinking Passionflower", price: 299 },
+    { name: "Sweet Basil", price: 249 },
+    { name: "Sweet Flag", price: 279 },
+    { name: "Tinnevelly Senna", price: 229 },
+    { name: "Trellis Vine", price: 279 },
+    { name: "Velvet Bean", price: 249 },
+    { name: "Coatbuttons", price: 229 },
+    { name: "Heart-Leaved Moonseed", price: 299 }
+];
+
+// Initialize cart with quantity information
+const cart = [];
+
+// Function to add a leaf to the cart
+function addToCart(leaf) {
+    const existingItem = cart.find((item) => item.name === leaf.name);
+
+    if (existingItem) {
+        existingItem.quantity += 1; // Increment quantity if item already exists in cart
+    } else {
+        cart.push({ ...leaf, quantity: 1 }); // Add item to cart with quantity 1
+    }
+
+    updateCart();
+}
+
+// Function to remove a leaf from the cart
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCart();
+}
+
+// Function to increase quantity
+function increaseQuantity(index) {
+    cart[index].quantity += 1;
+    updateCart();
+}
+
+// Function to decrease quantity
+function decreaseQuantity(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+    } else {
+        removeFromCart(index); // Remove the item if quantity becomes 0
+    }
+    updateCart();
+}
+
+// Function to update the cart display
+function updateCart() {
+    const cartList = document.getElementById("cart-items");
+    const cartTotal = document.getElementById("cart-total-popup");
+    let total = 0;
+
+    cartList.innerHTML = "";
+    cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+        cartList.innerHTML += `
+            <li>
+                ${item.name} - Rs${item.price.toFixed(2)} x ${item.quantity}
+                <button onclick="increaseQuantity(${index})">+</button>
+                <button onclick="decreaseQuantity(${index})">-</button>
+                <button onclick="removeFromCart(${index})">Remove</button>
+            </li>`;
+    });
+
+    cartTotal.textContent = `Rs${total.toFixed(2)}`;
+}
+
+
+// Rest of your code...
+
+
+// Function to simulate checkout
+function checkout() {
+    alert("Thank you for your purchase! Your order is successful.");
+    cart.length = 0; // Clear the cart
+    updateCart(); // Update cart display
+}
+
+// Pagination variables
+const leavesPerPage = 10;
+let currentPage = 1;
+
+// Function to display leaves for the current page
+function displayLeaves() {
+    const startIndex = (currentPage - 1) * leavesPerPage;
+    const endIndex = startIndex + leavesPerPage;
+    const currentLeaves = leaves.slice(startIndex, endIndex);
+
+    const leafContainer = document.getElementById("leaf-container");
+    leafContainer.innerHTML = "";
+
+    currentLeaves.forEach((leaf, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const nameElement = document.createElement("h3");
+    nameElement.textContent = leaf.name;
+
+    const priceElement = document.createElement("p");
+    priceElement.textContent = `Rs${leaf.price.toFixed(2)}`;
+
+    const button = document.createElement("button");
+    button.textContent = "Add to Cart";
+    button.onclick = () => addToCart(leaves[startIndex + index]);
+
+    card.appendChild(nameElement);
+    card.appendChild(priceElement);
+    card.appendChild(button);
+
+    leafContainer.appendChild(card);
+});
+
+}
+
+// Function to go to the next page
+function nextPage() {
+    const totalPages = Math.ceil(leaves.length / leavesPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        displayLeaves();
+    }
+}
+
+// Function to go to the previous page
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        displayLeaves();
+    }
+}
+// Function to go to a specific page using the slider
+function goToPage(page) {
+    currentPage = page;
+    displayLeaves();
+}
+
+// Function to update the slider's value based on the current page
+function updateSlider() {
+    const slider = document.getElementById("page-slider");
+    slider.value = currentPage;
+}
+
+// Initial display and slider setup
+displayLeaves();
+updateSlider();
+  // Function to open the cart pop-up
+function openCartPopup() {
+    const cartPopup = document.getElementById("cart-popup");
+    cartPopup.style.display = "block";
+
+    // Populate the cart items in the pop-up
+    const cartItemsList = document.getElementById("cart-items");
+    cartItemsList.innerHTML = "";
+    cart.forEach((leaf, index) => {
+        cartItemsList.innerHTML += `<li>${leaf.name} - $${leaf.price.toFixed(2)}</li>`;
+    });
+
+    // Update the total in the pop-up
+    const cartTotalPopup = document.getElementById("cart-total-popup");
+    const total = cart.reduce((acc, leaf) => acc + leaf.price, 0);
+    cartTotalPopup.textContent = total.toFixed(2);
+  
+
+}
+
+// Function to close the cart pop-up
+function closeCartPopup() {
+    const cartPopup = document.getElementById("cart-popup");
+    cartPopup.style.display = "none";
+}
+// Select the cart button
+const cartButton = document.getElementById("cart-button");
+
+// Add an event listener to open the cart popup
+cartButton.addEventListener("click", openCartPopup);
+// Function to update the cart badge
+function updateCartBadge() {
+  const cartBadge = document.querySelector(".btn-badge");
+  cartBadge.textContent = cart.length; // Set the badge text to the number of items in the cart
+}
+function updateCartBadge() {
+        const cartBadge = document.querySelector(".btn-badge");
+        cartBadge.textContent = cart.length > 0 ? `${cart.length}+` : ''; // Add a "+" if there are items in the cart
+    }
+
+// Function to add a leaf to the cart
+function addToCart(leaf) {
+  cart.push(leaf);
+  updateCart();
+  updateCartBadge(); // Update the cart badge
+}
+
+// Function to remove a leaf from the cart
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCart();
+  updateCartBadge(); // Update the cart badge
+}
+
+    </script>
+
+
+
+  <!-- 
+    - #FOOTER
+  -->
+
+  <footer class="footer">
+
+    <div class="footer-top section">
+      <div class="container">
+
+        <div class="footer-brand">
+
+          <a href="#" class="logo">AyushCure</a>
+
+          <p class="footer-text">
+            If you have any question, please contact us at <a href="mailto:support@gmail.com"
+              class="link">ayushsupport@gmail.com</a>
+          </p>
+
+          <ul class="contact-list">
+
+            <li class="contact-item">
+              <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+
+              <address class="address">
+              Chennai,TamilNadu,india
+              </address>
+            </li>
+
+            <li class="contact-item">
+              <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
+
+              <a href="tel:+16234567891011" class="contact-link">+91 6578334900</a>
+            </li>
+
+          </ul>
+
+        </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+
+        <p class="copyright">
+          &copy; 2023 ayush <a href="#" class="copyright-link"></a>
+        </p>
+
+        
+      </div>
+    </div>
+
+  </footer>
+
+
+
+
+
+  <!-- 
+    - #BACK TO TOP
+  -->
+
+  <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  </a>
+
+
+
+
+
+  <!-- 
+    - custom js link
+  -->
+  <script src="{{url_for('static',filename='JS/ecom.js')}}" defer></script>
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <script>
+    
+  </script>
+</body>
+
+</html>

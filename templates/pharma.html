@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{url_for('static',filename='Images/iconleaf2.png')}}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='CSS/pharma.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!--=============== SCROLL UP ===============-->
+    <a href="#" class="scrollup" id="scroll-up"> 
+        <i class="ri-arrow-up-fill scrollup__icon"></i>
+    </a>
+    <title>Responsive plants website - Bedimcode</title>
+    <style>
+       
+    .product h3 {
+        font-size: 24px; /* Change the font size as needed */
+        color: #ffffff; /* Change the font color as needed */
+    }
+
+
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="/" class="nav__logo">
+                AYUSH
+            </a>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="/" class="nav__link active-link">Try Us</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/#products" class="nav__link">Our Services</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/#about" class="nav__link">About</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/#faqs" class="nav__link">FAQs</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/#contact" class="nav__link">Contact Us</a>
+                    </li>
+                </ul>
+
+                <div class="nav__close" id="nav-close">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+
+            <div class="nav__btns">
+                <!-- Theme change button -->
+                <i class="ri-moon-line change-theme" id="theme-button"></i>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="ri-menu-line"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- Filter Options -->
+        <div class="filter-container">
+            <label for="diseaseFilter" style="margin-left: 10px;">Filter by Disease:</label>
+            <select id="diseaseFilter">
+                <option value="all">All Diseases</option>
+                <option value="anemia">Anemia</option>
+                <option value="anxiety and depression">Anxiety and depression</option>
+                <option value="asthma">Asthma</option>
+                <option value="cholesterol">Cholesterol</option>
+                <option value="Constipation">Constipation</option>
+                <option value="cough and Cold">Cough and Cold</option>
+                <option value="diabetes">Diabetes</option>
+                <option value="diarrhea">Diarrhea</option>
+                <option value="eye Problems">Eye Problems</option>
+                <option value="fever">fever</option>
+                <option value="high blood pressure">High blood pressure</option>
+                <option value="indigestion">Indigestion</option>
+                <option value="kidney stones">Kidney stones</option>
+                <option value="liver problems">Liver problems</option>
+                <option value="memory loss">Memory loss</option>
+                <option value="pain">Pain</option>
+                <option value="skin infections">Skin infections</option>
+                <option value="stomach problems">Stomach problems</option>
+                <option value="wounds">Wounds</option>
+            </select>
+        </div>
+        <div class="container">
+            <h3 class="title">Organic Leaves</h3>
+            <div class="products-container" id="leafContainer">
+                <!-- Leaf cards will be displayed here -->
+            </div>
+        </div>
+        <div class="product" data-form="Form Value" data-disease="Disease Value" data-description="Description Value">
+            <!-- Your leaf card content here -->
+        </div>
+        <div class="products-preview" id="leafPopup">
+            <div class="products-popup-content">
+                <i class="fas fa-times" id="closePopup"></i>
+                <h3 id="leafName">Leaf Name</h3>
+                <p id="leafForm">Form: </p>
+                <p id="leafDisease">Disease: </p>
+                <p id="leafDescription">Description: </p>
+            </div>
+        </div>
+    </main>
+        <script src="{{url_for('static',filename='JS/scrollreveal.min.js')}}"></script>
+        
+        <!--=============== MAIN JS ===============-->
+        <script src="{{url_for('static',filename='JS/main.js')}}"></script>
+    <script src="{{url_for('static',filename='JS/vid.js')}}"></script>
+</body>
+</html>

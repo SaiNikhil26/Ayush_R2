@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="{{url_for('static',filename='Images/iconleaf2.png')}}" type="image/x-icon">
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{url_for('static',filename='CSS/styles.css')}}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+        <title>Responsive plants website - Bedimcode</title>
+    </head>
+    <style>
+        /* CSS for the modal */
+       /* Style the modal overlay */
+body{
+            background-image: url("{{'static/'+'Images/ge.png'}}"); /* Specify the path to your background image */
+        background-size: cover; /* Cover the entire viewport */
+        background-repeat: no-repeat; /* Prevent image repetition */
+        background-attachment: fixed; /* Fix the background image in place */
+        background-position: top; /* Center the background image */
+        }
+        body::after{
+            content:'';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-image: url("{{'static/'+'Images/wave-bottom.png'}}");
+            height: 275px;
+            z-index:-10;}
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1;
+  overflow: auto;
+}
+
+/* Style the modal content */
+.modal-content {
+  background-color: transparent;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+#startWebcamButton {
+  display: inline-block;
+  background-color: #155041; /* Blue button color */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  width:200px;
+  height:100px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+#startWebcamButton:hover {
+  background-color:#6aae9d; /* Darker blue color on hover */
+}
+/* Style the video element */
+#webcam {
+  width: 80%; /* Set the desired width (e.g., 80% of its container) */
+  max-width: 500px; /* Set a maximum width to avoid it getting too large */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Style the capture and close buttons */
+#captureButton,
+#closeWebcamButton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color:#155041; /* Blue button color */
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 16px;
+}
+
+#captureButton:hover,
+#closeWebcamButton:hover {
+  background-color: #6aae9d; /* Darker blue color on hover */
+
+}
+
+    </style>
+    <body>
+        <header class="header" id="header">
+            <nav class="nav container">
+                <a href="/" class="nav__logo">
+                    AYUSH
+                </a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <a href="{{url_for('land')}}" class="nav__link active-link">Try Us</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/landing#products" class="nav__link">Our Services</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/landing#about" class="nav__link">About</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/landing#faqs" class="nav__link">FAQs</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="/landing#contact" class="nav__link">Contact Us</a>
+                        </li>
+                    </ul>
+
+                    <div class="nav__close" id="nav-close">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+
+                <div class="nav__btns">
+                    <!-- Theme change button -->
+                    <i class="ri-moon-line change-theme" id="theme-button"></i>
+
+                    <div class="nav__toggle" id="nav-toggle">
+                        <i class="ri-menu-line"></i>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main">
+             
+        <!--=============== SCROLL UP ===============-->
+        <a href="#" class="scrollup" id="scroll-up"> 
+            <i class="ri-arrow-up-fill scrollup__icon"></i>
+        </a>
+        <div class="styled-box">
+            <div class="upload-button-container">
+                    <p>
+                        {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% endwith %}
+                    </p>
+                <form method="post" action="/disease-prediction" enctype="multipart/form-data">
+                    <dl>
+                        <p>
+                            <input type="file" name="file" class="form-control upload-button" autocomplete="off" required>
+                        </p>
+                    </dl>
+                    <p>
+                        <input type="submit" value="Submit" class="btn btn-info upload-button" style="margin-top: 10px;">
+                    </p>
+                </form>                
+            </div>
+            <!--<button id="startWebcamButton">Upload with camera</button>-->
+            
+        </div>
+         <!-- Modal structure -->
+       
+            <div class="parameter-box-container">
+                <div class="image-container">
+                        {% if filename and src==1 %}
+                    <p>
+                        <img src="{{ url_for('static', filename='tests/' + filename) }}" alt="Uploaded Image" class="uploaded-image">
+                    </p>
+                        {% endif %}
+                </div>
+                <p>
+                    <div class="parameter-box">
+                        {% if src == 1 %}
+                        <strong>Plant Name:</strong>
+                        <span id="plant_name">{{ disease }}</span>
+                        {% endif %}
+                        <span><p id = "plant_name1" style="color: white; font-weight: bolder;"></p></span>
+                    </div>
+
+                    
+                    <div class="parameter-box">
+                        {% if src == 1 %}
+                        <strong>Cure:</strong>
+                        <span id="advantages">{{ cure }}</span>
+                        {% endif %}
+                        <span><p id="advantages1" style="color: white; font-weight: bolder;"></p></span>
+                    </div>
+
+
+    </body>
+    <script>
+        
+        const startWebcamButton = document.getElementById('startWebcamButton');
+        const webcamModal = document.getElementById('webcamModal');
+        const webcam = document.getElementById('webcam');
+        const captureButton = document.getElementById('captureButton');
+        const closeWebcamButton = document.getElementById('closeWebcamButton');
+        let mediaStream = null; // Store the media stream
+
+        // Function to start the webcam and display the modal
+        async function startWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                mediaStream = stream; // Store the media stream
+                webcamModal.style.display = 'block';
+                webcam.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+            }
+        }
+
+        // Function to close the modal
+        function closeWebcamModal() {
+            if (mediaStream) {
+                // Stop the webcam stream
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            webcamModal.style.display = 'none';
+        }
+
+        // Function to capture an image and send it to the backend
+        function captureImage() {
+            if (mediaStream) {
+                // Stop the webcam stream
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Capture an image from the webcam and convert it to a data URL
+            const canvas = document.createElement('canvas');
+            canvas.width = webcam.videoWidth;
+            canvas.height = webcam.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+            const imageDataURL = canvas.toDataURL('image/jpeg'); // You can adjust the format as needed
+
+            // Send the captured image data to the backend (e.g., using AJAX)
+            fetch('/capture', {
+                method: 'POST',
+                body: JSON.stringify({ imageDataURL }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response from the backend if needed
+                    console.log('Image captured and sent to the backend:', data);
+                    const plantNameElement = document.getElementById('plant_name1');
+                    const scientificNameElement = document.getElementById('scientific_name1');
+                    const advantagesElement = document.getElementById('advantages1');
+                    const locationElement = document.getElementById('location1');
+                    const webLinkElement = document.getElementById('web_link');
+
+                    plantNameElement.innerHTML = '<strong>Plant Name:</strong> <span>' + data.plant_name + '</span>';
+                    scientificNameElement.innerHTML = '<strong>Scientific Name:</strong> <span>' + data.scientific_name + '</span>';
+                    advantagesElement.innerHTML = '<strong>Advantages:</strong> <span>' + data.advantages + '</span>';
+                    locationElement.innerHTML = '<strong>General Locations:</strong> <span>' + data.general_location + '</span>';
+                    webLinkElement.innerHTML = '<strong>Plant Name:</strong> <span><a href="' + data.web_link + '">' + data.web_link + '</a></span>';
+
+                })
+                .catch(error => {
+                    console.error('Error sending captured image to the backend:', error);
+                });
+
+            webcamModal.style.display = 'none'; // Close the modal
+        }
+
+        // Attach the startWebcam function to the button click event
+        startWebcamButton.addEventListener('click', startWebcam);
+
+        // Attach the closeWebcamModal function to the close button click event
+        closeWebcamButton.addEventListener('click', closeWebcamModal);
+
+        // Attach the captureImage function to the capture button click event
+        captureButton.addEventListener('click', captureImage);
+
+    </script>
+    <script>
+    /*=============== SHOW MENU ===============*/
+    const navMenu = document.getElementById('nav-menu'),
+        navToggle = document.getElementById('nav-toggle'),
+        navClose = document.getElementById('nav-close')
+
+    /*===== MENU SHOW =====*/
+    /* Validate if constant exists */
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.add('show-menu')
+        })
+    }
+
+    /*===== MENU HIDDEN =====*/
+    /* Validate if constant exists */
+    if (navClose) {
+        navClose.addEventListener('click', () => {
+            navMenu.classList.remove('show-menu')
+        })
+    }
+
+    /*=============== REMOVE MENU MOBILE ===============*/
+    const navLink = document.querySelectorAll('.nav__link')
+
+    function linkAction() {
+        const navMenu = document.getElementById('nav-menu')
+        // When we click on each nav__link, we remove the show-menu class
+        navMenu.classList.remove('show-menu')
+    }
+    navLink.forEach(n => n.addEventListener('click', linkAction))
+
+    /*=============== CHANGE BACKGROUND HEADER ===============*/
+    function scrollHeader() {
+        const header = document.getElementById('header')
+        // When the scroll is greater than 80 viewport height, add the scroll-header class to the header tag
+        if (this.scrollY >= 80) header.classList.add('scroll-header'); else header.classList.remove('scroll-header')
+    }
+    window.addEventListener('scroll', scrollHeader)
+
+    /*=============== QUESTIONS ACCORDION ===============*/
+    const accordionItems = document.querySelectorAll('.questions__item')
+
+    accordionItems.forEach((item) => {
+        const accordionHeader = item.querySelector('.questions__header')
+
+        accordionHeader.addEventListener('click', () => {
+            const openItem = document.querySelector('.accordion-open')
+
+            toggleItem(item)
+
+            if (openItem && openItem !== item) {
+                toggleItem(openItem)
+            }
+        })
+    })
+
+    const toggleItem = (item) => {
+        const accordionContent = item.querySelector('.questions__content')
+
+        if (item.classList.contains('accordion-open')) {
+            accordionContent.removeAttribute('style')
+            item.classList.remove('accordion-open')
+        } else {
+            accordionContent.style.height = accordionContent.scrollHeight + 'px'
+            item.classList.add('accordion-open')
+        }
+
+    }
+
+    /*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
+    const sections = document.querySelectorAll('section[id]')
+
+    function scrollActive() {
+        const scrollY = window.pageYOffset
+
+        sections.forEach(current => {
+            const sectionHeight = current.offsetHeight,
+                sectionTop = current.offsetTop - 58,
+                sectionId = current.getAttribute('id')
+
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.add('active-link')
+            } else {
+                document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.remove('active-link')
+            }
+        })
+    }
+    window.addEventListener('scroll', scrollActive)
+
+    /*=============== SHOW SCROLL UP ===============*/
+    function scrollUp() {
+        const scrollUp = document.getElementById('scroll-up');
+        // When the scroll is higher than 400 viewport height, add the show-scroll class to the a tag with the scroll-top class
+        if (this.scrollY >= 400) scrollUp.classList.add('show-scroll'); else scrollUp.classList.remove('show-scroll')
+    }
+    window.addEventListener('scroll', scrollUp)
+
+    /*=============== DARK LIGHT THEME ===============*/
+    const themeButton = document.getElementById('theme-button')
+    const darkTheme = 'dark-theme'
+    const iconTheme = 'ri-sun-line'
+
+    // Previously selected topic (if user selected)
+    const selectedTheme = localStorage.getItem('selected-theme')
+    const selectedIcon = localStorage.getItem('selected-icon')
+
+    // We obtain the current theme that the interface has by validating the dark-theme class
+    const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? 'dark' : 'light'
+    const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? 'ri-moon-line' : 'ri-sun-line'
+
+    // We validate if the user previously chose a topic
+    if (selectedTheme) {
+        // If the validation is fulfilled, we ask what the issue was to know if we activated or deactivated the dark
+        document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme)
+        themeButton.classList[selectedIcon === 'ri-moon-line' ? 'add' : 'remove'](iconTheme)
+    }
+
+    // Activate / deactivate the theme manually with the button
+    themeButton.addEventListener('click', () => {
+        // Add or remove the dark / icon theme
+        document.body.classList.toggle(darkTheme)
+        themeButton.classList.toggle(iconTheme)
+        // We save the theme and the current icon that the user chose
+        localStorage.setItem('selected-theme', getCurrentTheme())
+        localStorage.setItem('selected-icon', getCurrentIcon())
+    })
+
+    /*=============== SCROLL REVEAL ANIMATION ===============*/
+    const sr = ScrollReveal({
+        origin: 'top',
+        distance: '60px',
+        duration: 2500,
+        delay: 400,
+        // reset: true
+    })
+
+    sr.reveal(`.home__data`)
+    sr.reveal(`.home__img`, { delay: 500 })
+    sr.reveal(`.home__social`, { delay: 600 })
+    sr.reveal(`.about__img, .contact__box`, { origin: 'left' })
+    sr.reveal(`.about__data, .contact__form`, { origin: 'right' })
+    sr.reveal(`.steps__card, .product__card, .questions__group, .footer`, { interval: 100 })
+    </script>
+
+    <script>
+    /*! @license ScrollReveal v4.0.9
+       Copyright 2021 Fisssion LLC.
+       Licensed under the GNU General Public License 3.0 for
+       compatible open source projects and non-commercial use.
+       For commercial sites, themes, projects, and applications,
+       keep your source code private/proprietary by purchasing
+       a commercial license from https://scrollrevealjs.org/
+    */
+    var ScrollReveal = function () {
+        "use strict";
+        var defaults = {
+            delay: 0,
+            distance: "0",
+            duration: 600,
+            easing: "cubic-bezier(0.5, 0, 0, 1)",
+            interval: 0,
+            opacity: 0,
+            origin: "bottom",
+            rotate: { x: 0, y: 0, z: 0 },
+            scale: 1,
+            cleanup: !1,
+            container: document.documentElement,
+            desktop: !0,
+            mobile: !0,
+            reset: !1,
+            useDelay: "always",
+            viewFactor: 0,
+            viewOffset: { top: 0, right: 0, bottom: 0, left: 0 },
+            afterReset: function () { },
+            afterReveal: function () { },
+            beforeReset: function () { },
+            beforeReveal: function () { },
+        };
+
+        var isSupported = function () {
+            return (
+                ("transform" in (t = document.documentElement.style) ||
+                    "WebkitTransform" in t) &&
+                ("transition" in (e = document.documentElement.style) ||
+                    "WebkitTransition" in e)
+            );
+            var e, t;
+        };
+
+        var isMobile = function (userAgent) {
+            return /Android|iPhone|iPad|iPod/i.test(userAgent);
+        };
+
+        function isObject(item) {
+            return (
+                item !== null &&
+                typeof item === "object" &&
+                item.constructor === Object
+            );
+        }
+
+        function forEachObject(obj, callback) {
+            if (isObject(obj)) {
+                Object.keys(obj).forEach(function (key) {
+                    callback(obj[key], key, obj);
+                });
+            } else if (obj instanceof Array) {
+                obj.forEach(function (item, index) {
+                    callback(item, index, obj);
+                });
+            } else {
+                throw new TypeError("Expected either an array or object literal.");
+            }
+        }
+
+        function log(message, args) {
+            if (ScrollReveal.debug && console) {
+                var output = "%cScrollReveal: " + message;
+                args.forEach(function (arg) {
+                    output += "\n — " + arg;
+                });
+                console.log(output, "color: #ea654b;");
+            }
+        }
+
+        function toggleClass(element, className) {
+            element.classList.toggle(className);
+        }
+
+        function saveToLocalStorage(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function loadFromLocalStorage(key) {
+            return JSON.parse(localStorage.getItem(key));
+        }
+
+        var getCurrentTheme = function () {
+            return document.body.classList.contains(darkTheme) ? "dark" : "light";
+        };
+
+        var getCurrentIcon = function () {
+            return themeButton.classList.contains(iconTheme)
+                ? "ri-moon-line"
+                : "ri-sun-line";
+        };
+
+        var themeButton = document.getElementById("theme-button");
+        var darkTheme = "dark-theme";
+        var iconTheme = "ri-sun-line";
+
+        var selectedTheme = localStorage.getItem("selected-theme");
+        var selectedIcon = localStorage.getItem("selected-icon");
+
+        if (selectedTheme) {
+            document.body.classList[
+                selectedTheme === "dark" ? "add" : "remove"
+            ](darkTheme);
+            themeButton.classList[
+                selectedIcon === "ri-moon-line" ? "add" : "remove"
+            ](iconTheme);
+        }
+
+        themeButton.addEventListener("click", function () {
+            document.body.classList.toggle(darkTheme);
+            themeButton.classList.toggle(iconTheme);
+
+            localStorage.setItem("selected-theme", getCurrentTheme());
+            localStorage.setItem("selected-icon", getCurrentIcon());
+        });
+
+        var sr = ScrollReveal({
+            origin: "top",
+            distance: "60px",
+            duration: 2500,
+            delay: 400,
+            // reset: true
+        });
+
+        sr.reveal(".home__data");
+        sr.reveal(".home__img", { delay: 500 });
+        sr.reveal(".home__social", { delay: 600 });
+        sr.reveal(".about__img, .contact__box", { origin: "left" });
+        sr.reveal(".about__data, .contact__form", { origin: "right" });
+        sr.reveal(".steps__card, .product__card, .questions__group, .footer", {
+            interval: 100,
+        });
+    };
+
+    if (typeof window !== "undefined") {
+        window.ScrollReveal = ScrollReveal;
+    }
+
+    ScrollReveal.debug = false;
+    ScrollReveal();
+
+    ScrollReveal.isSupported = isSupported;
+    ScrollReveal.isMobile = isMobile;
+
+    ScrollReveal();
+
+    </script>
+</html>

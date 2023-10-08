@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{url_for('static',filename='Images/iconleaf2.png')}}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='CSS/styles.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>Ayush-Green Check</title>
+</head>
+<style>
+    body{
+            background-image: url("{{'static/'+'Images/ge.png'}}"); /* Specify the path to your background image */
+        background-size: cover; /* Cover the entire viewport */
+        background-repeat: no-repeat; /* Prevent image repetition */
+        background-attachment: fixed; /* Fix the background image in place */
+        background-position: top; /* Center the background image */
+        }
+        body::after{
+            content:'';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-image: url("{{'static/'+'Images/wave-bottom.png'}}");
+            height: 275px;
+            z-index:-10;}
+    /* CSS for the modal */
+    /* Style the modal overlay */
+    .head-title
+    {
+          font-size: 3.5rem;
+  color: #fff;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top:1rem
+    }
+
+
+
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* Semi-transparent background */
+        z-index: 1;
+        overflow: auto;
+    }
+
+    /* Style the modal content */
+    .modal-content {
+        background-color: transparent;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    #startWebcamButton {
+        display: inline-block;
+        background-color: #155041;
+        /* Blue button color */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 15px;
+        width: 200px;
+        height: 100px;
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    #startWebcamButton:hover {
+        background-color: #6aae9d;
+        /* Darker blue color on hover */
+    }
+
+    /* Style the video element */
+    #webcam {
+        width: 80%;
+        /* Set the desired width (e.g., 80% of its container) */
+        max-width: 500px;
+        /* Set a maximum width to avoid it getting too large */
+        height: auto;
+        /* Maintain aspect ratio */
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    /* Style the capture and close buttons */
+    #captureButton,
+    #closeWebcamButton {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #155041;
+        /* Blue button color */
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+        font-size: 16px;
+    }
+
+    #captureButton:hover,
+    #closeWebcamButton:hover {
+        background-color: #6aae9d;
+        /* Darker blue color on hover */
+
+    }
+</style>
+
+<body>
+    <header class="header" id="header">
+        <nav class="nav container">
+            <a href="{{url_for('land')}}" class="nav__logo">
+                AYUSH
+            </a>
+
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="nav__item">
+                        <a href="{{url_for('land')}}" class="nav__link active-link">Try Us</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/landing#about" class="nav__link">About</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/landing#products" class="nav__link">Our Services</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/landing#faqs" class="nav__link">FAQs</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="/landing#contact" class="nav__link">Contact Us</a>
+                    </li>
+                </ul>
+
+                <div class="nav__close" id="nav-close">
+                    <i class="ri-close-line"></i>
+                </div>
+            </div>
+
+            <div class="nav__btns">
+                <!-- Theme change button -->
+                <i class="ri-moon-line change-theme" id="theme-button"></i>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="ri-menu-line"></i>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+
+        <!--=============== SCROLL UP ===============-->
+        <a href="#" class="scrollup" id="scroll-up">
+            <i class="ri-arrow-up-fill scrollup__icon"></i>
+        </a>
+
+        <!--=============== SCROLL REVEAL ===============-->
+        <script src="{{url_for('static',filename='JS/scrollreveal.min.js')}}"></script>
+
+        <!--=============== MAIN JS ===============-->
+        <script src="{{url_for('static',filename='JS/main.js')}}"></script>
+        <!--<h2 class="head-title">Green Check</h2>-->
+        <div class="styled-box">
+            <div class="upload-button-container">
+                <form method="post" action="/green_check" enctype="multipart/form-data">
+                    <dl>
+                        <p>
+                            <input type="file" name="file" class="form-control upload-button" autocomplete="off"
+                                required>
+                        </p>
+                    </dl>
+                    <p>
+                        <input type="submit" value="Submit" class="btn btn-info upload-button"
+                            style="margin-top: 10px;">
+                    </p>
+                </form>
+            </div>
+        </div>
+        <!-- Modal structure -->
+
+
+        <div class="parameter-box-container">
+            <div class="image-container"></div>
+            <div class="parameter-box">
+                <strong>Authenticity:</strong> {{authenticity}}
+            </div>
+        </div>
+        </div>
+        <section class="sec">
+            <p style="color: white;">Welcome to Green Check, your trusted partner in authenticating medicinal leaves!
+                At Ayush, we've harnessed the power of cutting-edge machine learning technology to
+                bring you a revolutionary feature. Our Green Check can swiftly determine whether
+                a medicinal leaf is genuine or counterfeit, ensuring you receive only the highest quality
+                herbs and remedies. With Ayush, identifying the correct leaf name has never been easier,
+                thanks to our state-of-the-art machine learning algorithms. Say goodbye to uncertainty and embrace the
+                assurance of authenticity with Green Check  your gateway to genuine medicinal leaves.</p>
+
+        </section>
+
+</body>
+<script>
+
+    const startWebcamButton = document.getElementById('startWebcamButton');
+    const webcamModal = document.getElementById('webcamModal');
+    const webcam = document.getElementById('webcam');
+    const captureButton = document.getElementById('captureButton');
+    const closeWebcamButton = document.getElementById('closeWebcamButton');
+    let mediaStream = null; // Store the media stream
+
+    // Function to start the webcam and display the modal
+    async function startWebcam() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            mediaStream = stream; // Store the media stream
+            webcamModal.style.display = 'block';
+            webcam.srcObject = stream;
+        } catch (error) {
+            console.error('Error accessing webcam:', error);
+        }
+    }
+
+    // Function to close the modal
+    function closeWebcamModal() {
+        if (mediaStream) {
+            // Stop the webcam stream
+            mediaStream.getTracks().forEach(track => track.stop());
+        }
+        webcamModal.style.display = 'none';
+    }
+
+    // Function to capture an image and send it to the backend
+    function captureImage() {
+        if (mediaStream) {
+            // Stop the webcam stream
+            mediaStream.getTracks().forEach(track => track.stop());
+        }
+
+        // Capture an image from the webcam and convert it to a data URL
+        const canvas = document.createElement('canvas');
+        canvas.width = webcam.videoWidth;
+        canvas.height = webcam.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+        const imageDataURL = canvas.toDataURL('image/jpeg'); // You can adjust the format as needed
+
+        // Send the captured image data to the backend (e.g., using AJAX)
+        fetch('/capture', {
+            method: 'POST',
+            body: JSON.stringify({ imageDataURL }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the backend if needed
+                console.log('Image captured and sent to the backend:', data);
+                const plantNameElement = document.getElementById('plant_name1');
+                const scientificNameElement = document.getElementById('scientific_name1');
+                const advantagesElement = document.getElementById('advantages1');
+                const locationElement = document.getElementById('location1');
+                const webLinkElement = document.getElementById('web_link1');
+
+                plantNameElement.innerHTML = '<strong>Plant Name:</strong> <span>' + data.plant_name + '</span>';
+                scientificNameElement.innerHTML = '<strong>Scientific Name:</strong> <span>' + data.scientific_name + '</span>';
+                advantagesElement.innerHTML = '<strong>Advantages:</strong> <span>' + data.advantages + '</span>';
+                locationElement.innerHTML = '<strong>General Locations:</strong> <span>' + data.general_location + '</span>';
+                webLinkElement.innerHTML = '<strong>Plant Name:</strong> <span><a href="' + data.web_link + '">' + data.web_link + '</a></span>';
+
+            })
+            .catch(error => {
+                console.error('Error sending captured image to the backend:', error);
+            });
+
+        webcamModal.style.display = 'none'; // Close the modal
+    }
+
+    // Attach the startWebcam function to the button click event
+    startWebcamButton.addEventListener('click', startWebcam);
+
+    // Attach the closeWebcamModal function to the close button click event
+    closeWebcamButton.addEventListener('click', closeWebcamModal);
+
+    // Attach the captureImage function to the capture button click event
+    captureButton.addEventListener('click', captureImage);
+
+</script>
+
+</html>

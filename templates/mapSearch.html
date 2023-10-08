@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map Search</title>
+    <meta charset="utf-8" />
+
+    <!-- Add references to the Azure Maps Map control JavaScript and CSS files. -->
+    <link rel="stylesheet" href="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css" type="text/css" />
+    <script src="https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js"></script>
+
+    <!-- Add a reference to the Azure Maps Services Module JavaScript file. -->
+    <script src="https://atlas.microsoft.com/sdk/javascript/service/2/atlas-service.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+
+
+    <style>
+
+       
+body {
+        /* Keep your existing background color and gradients */
+        background-color: #bcd1e0;
+        background-image:
+                          url("{{'static/'+'Images/leafbf.png'}}"); /* Replace 'your-image-url.jpg' with the URL of your background image */
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* Optional: Keeps the background fixed while scrolling */
+        background-position: center center;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
+    }
+       
+        #myMap {
+        width: 80%;
+        height: 400px;
+        margin-top: 20px;
+/* Adjust the opacity value as needed (0.0 to 1.0) */
+        border-radius: 30px;
+    }
+
+        .button-container {
+            margin-top: 10px;
+        }
+
+        .button-container button {
+            margin-right: 10px;
+        }
+        .search-container {
+
+        width: 100%;
+        max-width: 700px;
+        background: rgba(255,255,255,0.5);
+        display: flex;
+        align-items: center;
+        border-radius: 50px;
+        padding:10px 20px ;
+    }
+    .search-container input{
+        background: transparent;
+        flex:1;
+        border: 0;
+        outline: none;
+        padding:24px,20px;
+
+
+    }
+
+    /* Style for the label */
+    label {
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+    /* Style for the input field */
+    #place {
+        width: 300px;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    button.search-button {
+        background: none;
+        border: none;
+        color: #000; /* Change the font color to match the icon color */
+        cursor: pointer;
+        font-size: 24px; /* Adjust the font size as needed */
+        padding: 0; /* Remove padding to prevent extra spacing */
+    }
+
+    /* Hover effect for the search button */
+    button.search-button:hover {
+        background: none;
+    }
+/* Add CSS styling for the icon */
+.back-link {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   color: #333; /* Change the color as needed */
+   text-decoration: none;
+   font-size: 24px; /* Adjust the font size as needed */
+   transition: color 0.3s ease-in-out;
+}
+
+.back-link:hover {
+   color: #555; /* Change the hover color as needed */
+}
+
+    
+    </style>
+</head>
+<body>
+
+    <a href="/" class="back-link"><i class="fas fa-right-to-bracket"></i></a>
+    <div class="search-container">
+        <input type="text" id="place" placeholder="E.g., gardens, farms,wholesalers...">
+        <button class="search-button" onclick="searchPlace()"><i class="fas fa-search"></i></button>
+    </div>
+    <div id="myMap"></div>
+
+    <script>
+        var map;
+        var datasource;
+        var popup;
+
+        function searchPlace() {
+            var place = document.getElementById("place").value;
+
+            if (place && place.trim() !== "") {
+                if (map) {
+                    map.dispose(); // Dispose of the previous map instance
+                }
+
+                map = new atlas.Map("myMap", {
+                    center: [-122.3321, 47.6062], // Default center (Seattle)
+                    zoom: 12, // Default zoom level
+                    authOptions: {
+                        authType: 'subscriptionKey',
+                        subscriptionKey: 'u1nC98ivqVTvmNsM7PMjvEUV5NXmvNY7-j5ctkS2bBI'
+                    }
+                });
+
+                map.events.add('ready', function () {
+                    datasource = new atlas.source.DataSource();
+                    map.sources.add(datasource);
+
+                    var resultLayer = new atlas.layer.SymbolLayer(datasource, null, {
+                        iconOptions: {
+                            image: 'pin-round-darkblue',
+                            anchor: 'center',
+                            allowOverlap: true
+                        },
+                        textOptions: {
+                            anchor: "top"
+                        }
+                    });
+
+                    map.layers.add(resultLayer);
+
+                    var pipeline = atlas.service.MapsURL.newPipeline(new atlas.service.MapControlCredential(map));
+                    var searchURL = new atlas.service.SearchURL(pipeline);
+
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var lat = position.coords.latitude;
+                        var lon = position.coords.longitude;
+
+                        searchURL.searchPOI(atlas.service.Aborter.timeout(10000), place, {
+                            limit: 10,
+                            lat: lat,
+                            lon: lon,
+                            view: 'Auto'
+                        }).then((results) => {
+                            var data = results.geojson.getFeatures();
+                            datasource.add(data);
+
+                            // Add markers (pins) at the locations of search results.
+                            data.features.forEach(function (feature) {
+                                var coordinates = feature.geometry.coordinates;
+                                var properties = feature.properties;
+
+                                var pin = new atlas.Shape(new atlas.data.Point(coordinates), {
+                                    iconOptions: {
+                                        image: 'pin-round-darkblue',
+                                        anchor: 'center'
+                                    },
+                                    properties: properties
+                                });
+
+                                datasource.add(pin);
+                            });
+
+                            map.setCamera({
+                                bounds: data.bbox,
+                                padding: 15
+                            });
+                        });
+                    });
+
+                    popup = new atlas.Popup();
+
+                    map.events.add('mouseover', resultLayer, showPopup);
+
+                    function showPopup(e) {
+                        var p = e.shapes[0].getProperties();
+                        var position = e.shapes[0].getCoordinates();
+
+                        var html = `
+                          <div style="padding:5px">
+                            <div><b>${p.poi.name}</b></div>
+                            <div>${p.address.freeformAddress}</div>
+                            <div>${position[1]}, ${position[0]}</div>
+                          </div>`;
+
+                        popup.setPopupOptions({
+                            content: html,
+                            position: position
+                        });
+
+                        popup.open(map);
+                    }
+                });
+            } else {
+                alert("Please enter a place to search.");
+            }
+        }
+
+        function searchWholesalers() {
+            var place = "medicinal plant wholesalers"; // Modify the query for wholesalers
+            searchPlaceWithQuery(place);
+        }
+
+        function searchFarms() {
+            var place = "medicinal plant farms"; // Modify the query for farms
+            searchPlaceWithQuery(place);
+        }
+
+        function searchPlaceWithQuery(query) {
+            if (map) {
+                map.dispose(); // Dispose of the previous map instance
+            }
+
+            map = new atlas.Map("myMap", {
+                center: [-122.3321, 47.6062], // Default center (Seattle)
+                zoom: 12, // Default zoom level
+                authOptions: {
+                    authType: 'subscriptionKey',
+                    subscriptionKey: '<Your Azure Maps Subscription Key>'
+                }
+            });
+
+            map.events.add('ready', function () {
+                datasource = new atlas.source.DataSource();
+                map.sources.add(datasource);
+
+                var resultLayer = new atlas.layer.SymbolLayer(datasource, null, {
+                    iconOptions: {
+                        image: 'pin-round-darkblue',
+                        anchor: 'center',
+                        allowOverlap: true
+                    },
+                    textOptions: {
+                        anchor: "top"
+                    }
+                });
+
+                map.layers.add(resultLayer);
+
+                var pipeline = atlas.service.MapsURL.newPipeline(new atlas.service.MapControlCredential(map));
+                var searchURL = new atlas.service.SearchURL(pipeline);
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+
+                    searchURL.searchPOI(atlas.service.Aborter.timeout(10000), query, {
+                        limit: 10,
+                        lat: lat,
+                        lon: lon,
+                        view: 'Auto'
+                    }).then((results) => {
+                        var data = results.geojson.getFeatures();
+                        datasource.add(data);
+
+                        // Add markers (pins) at the locations of search results.
+                        data.features.forEach(function (feature) {
+                            var coordinates = feature.geometry.coordinates;
+                            var properties = feature.properties;
+
+                            var pin = new atlas.Shape(new atlas.data.Point(coordinates), {
+                                iconOptions: {
+                                    image: 'pin-round-darkblue',
+                                    anchor: 'center'
+                                },
+                                properties: properties
+                            });
+
+                            datasource.add(pin);
+                        });
+
+                        map.setCamera({
+                            bounds: data.bbox,
+                            padding: 15
+                        });
+                    });
+                });
+
+                popup = new atlas.Popup();
+
+                map.events.add('mouseover', resultLayer, showPopup);
+
+                function showPopup(e) {
+                    var p = e.shapes[0].getProperties();
+                    var position = e.shapes[0].getCoordinates();
+
+                    var html = `
+                      <div style="padding:5px">
+                        <div><b>${p.poi.name}</b></div>
+                        <div>${p.address.freeformAddress}</div>
+                        <div>${position[1]}, ${position[0]}</div>
+                      </div>`;
+
+                    popup.setPopupOptions({
+                        content: html,
+                        position: position
+                    });
+
+                    popup.open(map);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
